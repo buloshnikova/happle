@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">Android GCM Client</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="register">Register</string>
+    <string name="registry_status">Registry Status:</string>
+    <string name="registry_status_result">Not Registered</string>
+    <string name="broadcast_label">Broadcast Message:</string>
+    <string name="broadcast_result">No broadcast message yet</string>
+    <string name="reg_id">Registration ID</string>
+    <string name="btnSend">Send Message</string>
+
+</resources>
