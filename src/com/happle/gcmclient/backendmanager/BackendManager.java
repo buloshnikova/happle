@@ -20,6 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.happle.gcmclient.config.Constants;
+import com.happle.gcmclient.utility.ParameterUtil;
 
 import android.content.Context;
 import android.content.Intent;
@@ -54,22 +55,15 @@ public final class BackendManager {
 		return null;
 	}
 
-	public static String getResultPost(String url, String message,
-			String tickerText, String contentTitle, String senderID) {
-		Log.d("BackendManager.getResultPost", "starting request = " + url);
-		String res = "-101";
+	public static int sendMessage(String message, String msg_id, String wave_id, int msg_order, String senderID, int msg_status) {
+		Log.d("BackendManager.sendMessage", "starting request = " + Constants.URL_SEND_MESSAGE);
+		int error = Constants.FAILED;
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-
-		HttpPost post = new HttpPost(url);
+		HttpPost post = new HttpPost(Constants.URL_SEND_MESSAGE);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("message", message));
-		pairs.add(new BasicNameValuePair("tickerText", tickerText));
-		pairs.add(new BasicNameValuePair("contentTitle", contentTitle));
-		pairs.add(new BasicNameValuePair("senderID", senderID));
-		pairs.add(new BasicNameValuePair("phoneType", Constants.phoneType));
+		List<NameValuePair> parameters = ParameterUtil.CreateSendMessageParams(msg_id, wave_id, msg_order, Constants.LANGUAGE_ID, senderID, message, msg_status);
 		try {
-			post.setEntity(new UrlEncodedFormEntity(pairs));
+			post.setEntity(new UrlEncodedFormEntity(parameters));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,32 +72,32 @@ public final class BackendManager {
 		try {
 			HttpResponse response = httpClient.execute(post);
 			HttpEntity httpentity = response.getEntity();
-			res = EntityUtils.toString(httpentity);
+			String res = EntityUtils.toString(httpentity);
 			res = res.trim();
+			error = Integer.parseInt(res);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return error;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return error;
 		}
-		return res;
+		return error;
 	}
 
-	public String getRegistrationPost(String url, String senderID) {
+	public int sendLoginRegistration(String url, String senderID, boolean isLogin) {
 		long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
-		String res = "-101";
+		int error = Constants.FAILED;
+		
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpPost post = new HttpPost(url);
+		HttpPost post = new HttpPost(isLogin ? Constants.URL_REGISTER : Constants.URL_LOGIN);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("senderID", senderID));
-		pairs.add(new BasicNameValuePair("phoneType", Constants.phoneType));
+		List<NameValuePair> parameters = ParameterUtil.createLoginRegistrationParams(senderID, null, null);
 		// Url Encoding the POST parameters
 		try {
-			post.setEntity(new UrlEncodedFormEntity(pairs));
+			post.setEntity(new UrlEncodedFormEntity(parameters));
 		} catch (UnsupportedEncodingException e) {
 			// writing error to Log
 			e.printStackTrace();
@@ -114,12 +108,13 @@ public final class BackendManager {
 			try {
 				HttpResponse response = httpClient.execute(post);
 				HttpEntity httpentity = response.getEntity();
-				res = EntityUtils.toString(httpentity);
+				String res = EntityUtils.toString(httpentity);
 				res = res.trim();
+				error = Integer.parseInt(res);
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return null;
+				return error;
 			} catch (IOException e) {
 				Log.e(DISPLAY_MESSAGE_ACTION, "Failed to register on attempt "
 						+ i + ":" + e);
@@ -135,24 +130,24 @@ public final class BackendManager {
 					Log.d(DISPLAY_MESSAGE_ACTION,
 							"Thread interrupted: abort remaining retries!");
 					Thread.currentThread().interrupt();
-					return res;
+					return error;
 				}
 			}
 			// increase backoff exponentially
 			backoff *= 2;
 		}
-		return res;
+		return error;
 	}
 
-	public String sendUnregister(String url, String senderID) {
+	public int sendUnregisterLogout(String url, String senderID, boolean isLogout) {
 		long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
-		String res = "-101";
+		int error = Constants.FAILED;
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpPost post = new HttpPost(url);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("senderID", senderID));
-		pairs.add(new BasicNameValuePair("phoneType", Constants.phoneType));
+		pairs.add(new BasicNameValuePair("phoneType", Constants.PHONE_TYPE));
 		// Url Encoding the POST parameters
 		try {
 			post.setEntity(new UrlEncodedFormEntity(pairs));
@@ -166,12 +161,13 @@ public final class BackendManager {
 			try {
 				HttpResponse response = httpClient.execute(post);
 				HttpEntity httpentity = response.getEntity();
-				res = EntityUtils.toString(httpentity);
+				String res = EntityUtils.toString(httpentity);
 				res = res.trim();
+				error = Integer.parseInt(res);
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return null;
+				return error;
 			} catch (IOException e) {
 				Log.e(DISPLAY_MESSAGE_ACTION,
 						"Failed to unregister on attempt " + i + ":" + e);
@@ -187,13 +183,13 @@ public final class BackendManager {
 					Log.d(DISPLAY_MESSAGE_ACTION,
 							"Thread interrupted: abort remaining retries!");
 					Thread.currentThread().interrupt();
-					return res;
+					return error;
 				}
 			}
 			// increase backoff exponentially
 			backoff *= 2;
 		}
-		return res;
+		return error;
 	}
 
 	static void displayMessage(Context context, String message) {

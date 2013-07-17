@@ -50,7 +50,6 @@ public class MainActivity extends Activity {
 	// This broadcastreceiver instance will receive messages broadcast
 	// with the action "GCM_RECEIVED_ACTION" via the gcmFilter
 
-	// A BroadcastReceiver must override the onReceive() event.
 	private BroadcastReceiver gcmReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -221,15 +220,12 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 	}
 
-	class SendMessageTask extends AsyncTask<Void, Void, String> {
+	class SendMessageTask extends AsyncTask<Void, Void, Integer> {
 		@Override
-		protected String doInBackground(Void... params) {
-			String response = "";
+		protected Integer doInBackground(Void... params) {
+			int response = Constants.FAILED;
 			try {
-				response = BackendManager.getResultPost(
-						Constants.URL_GET_MESSAGE, txtMessage.getText()
-								.toString(), "tickerText", "contentTitle",
-						regId);
+				response = BackendManager.sendMessage(txtMessage.getText().toString(), "1", "1", Constants.MESSAGE_ROOT, regId, Constants.MSG_STATUS_ACTIVE);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -237,7 +233,7 @@ public class MainActivity extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
 			tvBroadcastMessage.setEnabled(true);
 			tvBroadcastMessage.setText(result);

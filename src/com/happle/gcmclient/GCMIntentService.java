@@ -70,7 +70,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.d(TAG, regId);
 	}
 
-	class SendRegistrationTask extends AsyncTask<Void, Void, Void> {
+	class SendRegistrationTask extends AsyncTask<Void, Void, Integer> {
 		private String regId = "";
 
 		public SendRegistrationTask(String regId) {
@@ -83,17 +83,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
-			String result = "";
+		protected Integer doInBackground(Void... params) {
+			int error = Constants.FAILED;
 			try {
 				BackendManager bManager = new BackendManager();
-				result = bManager.getRegistrationPost(Constants.URL_REGISTER,
-						regId);
+				error = bManager.sendLoginRegistration(Constants.URL_REGISTER, regId, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Log.d(TAG, result);
-			return null;
+			Log.d(TAG, String.valueOf(error));
+			return error;
 		}
 	}
 
@@ -105,19 +104,18 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Log.d(TAG, regId);
 	}
 
-	class SendUnregisterTask extends AsyncTask<Void, Void, Void> {
+	class SendUnregisterTask extends AsyncTask<Void, Void, Integer> {
 		@Override
-		protected Void doInBackground(Void... params) {
-			String result = "";
+		protected Integer doInBackground(Void... params) {
+			int error = Constants.FAILED;
 			try {
 				BackendManager bManager = new BackendManager();
-				result = bManager.getRegistrationPost(Constants.URL_REGISTER,
-						regId);
+				error = bManager.sendUnregisterLogout(Constants.URL_REGISTER, regId, false);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Log.d(TAG, result);
-			return null;
+			Log.d(TAG, String.valueOf(error));
+			return error;
 		}
 	}
 
