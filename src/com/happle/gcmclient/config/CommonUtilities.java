@@ -1,12 +1,10 @@
 package com.happle.gcmclient.config;
 
-public abstract class Constants {
-	// This is the project id generated from the Google console when
-	// you defined a Google APIs project.
-	public static final String PROJECT_NUMBER = "435848802389";
+public abstract class CommonUtilities {
+	// This is the project id generated from the Google console when defined a Google APIs project.
+	public static final String SENDER_ID = "435848802389";
 	public static final String PROJECT_ID = "r567pispopd";
-	// This tag is used in Log.x() calls
-	public static final String TAG = "MainActivity";
+	public static String REGISTRATION_ID = "REG_ID";
 
 	// ======== WEBSERVICE URL===========/
 	public static final String URL_SEND_MESSAGE = "http://stranas.zapto.org/WebService.asmx/GetMessageFormAndroid";
@@ -31,4 +29,17 @@ public abstract class Constants {
 	
 	// ============= TEMP ============= //
 	public static final String LANGUAGE_ID = "ENG";
+	
+	// ============ FILTER ACTION =========== //
+	public static final String ACTION_ON_REGISTERED = "com.happle.asknshare.ON_REGISTERED";
+	public static final String ACTION_ON_NEW_COMMENT = "com.happle.asknshare.ON_NEW_COMMENT";
+	
+	public static boolean isRegistrationNull() {
+		if (REGISTRATION_ID == null || REGISTRATION_ID.equalsIgnoreCase("")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

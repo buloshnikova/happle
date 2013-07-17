@@ -1,7 +1,7 @@
 package com.happle.gcmclient;
 
 import com.happle.gcmclient.R;
-import com.happle.gcmclient.config.Constants;
+import com.happle.gcmclient.config.CommonUtilities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ public class MessageActivity extends Activity {
 	  @Override
 	  public void onResume() {
 	    super.onResume();
-	    String msg = getIntent().getStringExtra(Constants.FIELD_MESSAGE);
+	    String msg = getIntent().getStringExtra(CommonUtilities.FIELD_MESSAGE);
 	    tvMessage.setText(msg);
 	  }
 }

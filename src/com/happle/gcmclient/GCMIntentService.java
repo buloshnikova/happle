@@ -13,7 +13,7 @@ import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.happle.gcmclient.R;
 import com.happle.gcmclient.backendmanager.BackendManager;
-import com.happle.gcmclient.config.Constants;
+import com.happle.gcmclient.config.CommonUtilities;
 import com.happle.gcmclient.utility.WakeLocker;
 
 public class GCMIntentService extends GCMBaseIntentService {
@@ -24,7 +24,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	SendUnregisterTask suTask;
 
 	public GCMIntentService() {
-		super(Constants.PROJECT_NUMBER);
+		super(CommonUtilities.SENDER_ID);
 		Log.d(TAG, "GCMIntentService init");
 	}
 
@@ -84,10 +84,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		@Override
 		protected Integer doInBackground(Void... params) {
-			int error = Constants.FAILED;
+			int error = CommonUtilities.FAILED;
 			try {
 				BackendManager bManager = new BackendManager();
-				error = bManager.sendLoginRegistration(Constants.URL_REGISTER, regId, true);
+				error = bManager.sendLoginRegistration(CommonUtilities.URL_REGISTER, regId, true);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -107,10 +107,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 	class SendUnregisterTask extends AsyncTask<Void, Void, Integer> {
 		@Override
 		protected Integer doInBackground(Void... params) {
-			int error = Constants.FAILED;
+			int error = CommonUtilities.FAILED;
 			try {
 				BackendManager bManager = new BackendManager();
-				error = bManager.sendUnregisterLogout(Constants.URL_REGISTER, regId, false);
+				error = bManager.sendUnregisterLogout(CommonUtilities.URL_REGISTER, regId, false);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -131,7 +131,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// Set a unique data uri for each notification to make sure the activity
 		// gets updated
 		intent.setData(Uri.parse(message));
-		intent.putExtra(Constants.FIELD_MESSAGE, message);
+		intent.putExtra(CommonUtilities.FIELD_MESSAGE, message);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,

@@ -6,17 +6,17 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.happle.gcmclient.config.Constants;
+import com.happle.gcmclient.config.CommonUtilities;
 
 public final class ParameterUtil {
 
 	 public static  List<NameValuePair> createLoginRegistrationParams(String registration_id, String username, String user_pwd) {
 			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 			parameters.add(new BasicNameValuePair("registration_id", registration_id));
-			parameters.add(new BasicNameValuePair("phone_type", Constants.PHONE_TYPE));
+			parameters.add(new BasicNameValuePair("phone_type", CommonUtilities.PHONE_TYPE));
 			parameters.add(new BasicNameValuePair("username", username));
 			parameters.add(new BasicNameValuePair("user_pwd", user_pwd));
-		 	parameters.add(new BasicNameValuePair("user_status", Constants.STATUS_ON));
+		 	parameters.add(new BasicNameValuePair("user_status", CommonUtilities.STATUS_ON));
 			return parameters;
 		}
 	 

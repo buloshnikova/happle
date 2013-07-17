@@ -19,7 +19,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.happle.gcmclient.config.Constants;
+import com.happle.gcmclient.config.CommonUtilities;
 import com.happle.gcmclient.utility.ParameterUtil;
 
 import android.content.Context;
@@ -56,12 +56,12 @@ public final class BackendManager {
 	}
 
 	public static int sendMessage(String message, String msg_id, String wave_id, int msg_order, String senderID, int msg_status) {
-		Log.d("BackendManager.sendMessage", "starting request = " + Constants.URL_SEND_MESSAGE);
-		int error = Constants.FAILED;
+		Log.d("BackendManager.sendMessage", "starting request = " + CommonUtilities.URL_SEND_MESSAGE);
+		int error = CommonUtilities.FAILED;
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpPost post = new HttpPost(Constants.URL_SEND_MESSAGE);
+		HttpPost post = new HttpPost(CommonUtilities.URL_SEND_MESSAGE);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-		List<NameValuePair> parameters = ParameterUtil.CreateSendMessageParams(msg_id, wave_id, msg_order, Constants.LANGUAGE_ID, senderID, message, msg_status);
+		List<NameValuePair> parameters = ParameterUtil.CreateSendMessageParams(msg_id, wave_id, msg_order, CommonUtilities.LANGUAGE_ID, senderID, message, msg_status);
 		try {
 			post.setEntity(new UrlEncodedFormEntity(parameters));
 		} catch (UnsupportedEncodingException e) {
@@ -89,10 +89,10 @@ public final class BackendManager {
 
 	public int sendLoginRegistration(String url, String senderID, boolean isLogin) {
 		long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
-		int error = Constants.FAILED;
+		int error = CommonUtilities.FAILED;
 		
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpPost post = new HttpPost(isLogin ? Constants.URL_REGISTER : Constants.URL_LOGIN);
+		HttpPost post = new HttpPost(isLogin ? CommonUtilities.URL_REGISTER : CommonUtilities.URL_LOGIN);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		List<NameValuePair> parameters = ParameterUtil.createLoginRegistrationParams(senderID, null, null);
 		// Url Encoding the POST parameters
@@ -141,13 +141,13 @@ public final class BackendManager {
 
 	public int sendUnregisterLogout(String url, String senderID, boolean isLogout) {
 		long backoff = BACKOFF_MILLI_SECONDS + random.nextInt(1000);
-		int error = Constants.FAILED;
+		int error = CommonUtilities.FAILED;
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		HttpPost post = new HttpPost(url);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("senderID", senderID));
-		pairs.add(new BasicNameValuePair("phoneType", Constants.PHONE_TYPE));
+		pairs.add(new BasicNameValuePair("phoneType", CommonUtilities.PHONE_TYPE));
 		// Url Encoding the POST parameters
 		try {
 			post.setEntity(new UrlEncodedFormEntity(pairs));
