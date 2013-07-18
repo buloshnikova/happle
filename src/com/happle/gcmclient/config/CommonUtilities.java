@@ -1,5 +1,7 @@
 package com.happle.gcmclient.config;
 
+import java.util.UUID;
+
 public abstract class CommonUtilities {
 	// This is the project id generated from the Google console when defined a Google APIs project.
 	public static final String SENDER_ID = "435848802389";
@@ -34,6 +36,7 @@ public abstract class CommonUtilities {
 	public static final String ACTION_ON_REGISTERED = "com.happle.asknshare.ON_REGISTERED";
 	public static final String ACTION_ON_NEW_COMMENT = "com.happle.asknshare.ON_NEW_COMMENT";
 	
+	// ============ FUNCTIONS =============== //
 	public static boolean isRegistrationNull() {
 		if (REGISTRATION_ID == null || REGISTRATION_ID.equalsIgnoreCase("")) {
 			return true;
@@ -42,4 +45,8 @@ public abstract class CommonUtilities {
 		}
 	}
 
+	public static String generateGUID() {
+		UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+	}
 }
