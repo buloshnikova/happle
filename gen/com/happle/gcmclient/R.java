@@ -22,17 +22,14 @@ public final class R {
         public static final int success=0x7f020003;
     }
     public static final class id {
-        public static final int btnSend=0x7f050008;
-        public static final int menu_settings=0x7f05000a;
-        public static final int message=0x7f050009;
+        public static final int btnAsk=0x7f050001;
+        public static final int btnSend=0x7f050006;
+        public static final int menu_settings=0x7f050007;
         public static final int notification_id=0x7f050000;
         public static final int tv_message=0x7f050004;
-        public static final int tv_message_label=0x7f050003;
-        public static final int tv_reg_status=0x7f050001;
-        public static final int tv_reg_status_result=0x7f050002;
-        public static final int tv_registration_id=0x7f050006;
-        public static final int tv_registration_id_label=0x7f050005;
-        public static final int txtMsg=0x7f050007;
+        public static final int tv_registration_id=0x7f050003;
+        public static final int tv_registration_id_label=0x7f050002;
+        public static final int txtMsg=0x7f050005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -46,6 +43,8 @@ public final class R {
         public static final int broadcast_label=0x7f060007;
         public static final int broadcast_result=0x7f060008;
         public static final int btnSend=0x7f06000a;
+        public static final int btn_ask=0x7f06000b;
+        public static final int btn_ask_hint=0x7f06000c;
         public static final int hello_world=0x7f060001;
         public static final int menu_settings=0x7f060002;
         public static final int reg_id=0x7f060009;

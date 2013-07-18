@@ -28,27 +28,18 @@ import com.happle.gcmclient.utility.NetworkUtility;
 
 public class MainActivity extends Activity {
 	private final String TAG = this.getClass().getSimpleName();
-	
 	private String regId = "";
-
-	private String registrationStatus = "Not yet registered";
-	private String broadcastMessage = "No broadcast message";
-
-	// This intent filter will be set to filter on the string "GCM_RECEIVED_ACTION"
-	private GCMReceiver mGCMReceiver;
-	private IntentFilter registeredFilter;
 	
 	SharedPreferences sPref;
-	
-	// Alert dialog manager
-	AlertDialogManager alert = new AlertDialogManager();
 
-	TextView tvRegStatusResult;
-	TextView tvBroadcastMessage;
+	// This intent filter will be set to filter on the string "GCM_RECEIVED_ACTION"
+	GCMReceiver mGCMReceiver;
+	IntentFilter registeredFilter;
+	// Alert dialog manager
+	private AlertDialogManager alert = new AlertDialogManager();
+
 	TextView tvRegID;
-	EditText txtMessage;
-	Button btnSend;
-	SendMessageTask smTask;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,49 +57,33 @@ public class MainActivity extends Activity {
 		}		
 		initUI();
 		
-		initReceiver();
-		
 		if (CommonUtilities.SENDER_ID == null) {
 			Log.d(TAG, "Missing SENDER_ID");
 			return;
 		}
 
 		registeredFilter.addAction("GCM_RECEIVED_ACTION");
+	}
 
+	private void initUI() {
+		findViewById(R.id.btnAsk).setOnClickListener(askListener);
 		if (isRegistered()) {
 			regId = getPreferences(CommonUtilities.REGISTRATION_ID);
 		} else { 
 			registerClient(); }
 		tvRegID = (TextView) findViewById(R.id.tv_registration_id);
-		tvRegID.setText(regId);		
-	}
-
-	private void initUI() {
-		tvBroadcastMessage = (TextView) findViewById(R.id.tv_message);
-		tvRegStatusResult = (TextView) findViewById(R.id.tv_reg_status_result);
-		txtMessage = (EditText) findViewById(R.id.txtMsg);
-		txtMessage.setText("program started");
-		btnSend = (Button) findViewById(R.id.btnSend);
-		btnSend.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				if (TextUtils.isEmpty(txtMessage.getText())) {
-					Toast.makeText(MainActivity.this,
-							"Please enter a message recipient.",
-							Toast.LENGTH_SHORT).show();
-					return;
-				}
-				sendMessageToServer();
-			}
-		});
+		tvRegID.setText(regId);	
 	}
 	
-	private void initReceiver() {
-		mGCMReceiver = new GCMReceiver();
-		registeredFilter = new IntentFilter();
-		registeredFilter.addAction(CommonUtilities.ACTION_ON_REGISTERED);
-		registeredFilter.addAction(CommonUtilities.ACTION_ON_NEW_COMMENT);
-	}
+	private OnClickListener askListener = new OnClickListener() {
+		public void onClick(View v) {
+			Intent intent = new Intent(MainActivity.this, MessageActivity.class);
+			startActivityForResult(intent, CommonUtilities.REQUEST_CODE_ADD);
+			intent.putExtra("REG_ID", regId);
+			intent.putExtra("REQUEST_CODE", String.valueOf(CommonUtilities.REQUEST_CODE_UPD));
+			startActivityForResult(intent, CommonUtilities.REQUEST_CODE_UPD);
+		}
+	};
 	
 	public void registerClient() {
 		try {
@@ -120,25 +95,14 @@ public class MainActivity extends Activity {
 			regId = GCMRegistrar.getRegistrationId(this);
 
 			if (regId.equals("")) {
-				registrationStatus = "Registering...";
-				tvRegStatusResult.setText(registrationStatus);
 				// register this device for this project
 				GCMRegistrar.register(this, CommonUtilities.SENDER_ID);
 				regId = GCMRegistrar.getRegistrationId(this);
-				registrationStatus = "Registration Acquired";
-			} else {
-				registrationStatus = "Already registered";
 			}
 			savePreverences(CommonUtilities.REGISTRATION_ID, regId);
 		} catch (Exception e) {
 			e.printStackTrace();
-			registrationStatus = e.getMessage();
-
 		}
-
-		Log.d(TAG, registrationStatus);
-		tvRegStatusResult.setText(registrationStatus);
-
 		Log.d(TAG, regId);
 	}
 
@@ -165,40 +129,6 @@ public class MainActivity extends Activity {
 	    return result;
 	}
 	
-	public void sendMessageToServer() {
-		txtMessage.setEnabled(false);
-		smTask = new SendMessageTask();
-		smTask.execute();
-	}
-
-	// If the user changes the orientation of his phone, the current activity
-	// is destroyed, and then re-created. This means that our broadcast message
-	// will get wiped out during re-orientation.
-	// So, we save the broadcast message during an onSaveInstanceState()
-	// event, which is called prior to the destruction of the activity.
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-
-		super.onSaveInstanceState(savedInstanceState);
-
-		savedInstanceState.putString("BroadcastMessage", broadcastMessage);
-
-	}
-
-	// When an activity is re-created, the os generates an
-	// onRestoreInstanceState()
-	// event, passing it a bundle that contains any values that you may have put
-	// in during onSaveInstanceState()
-	// We can use this mechanism to re-display our last broadcast message.
-
-	@Override
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-
-		super.onRestoreInstanceState(savedInstanceState);
-
-		broadcastMessage = savedInstanceState.getString("BroadcastMessage");
-		tvBroadcastMessage.setText(broadcastMessage);
-	}
 
 	// If our activity is paused, it is important to UN-register any
 	// broadcast receivers.
@@ -243,32 +173,6 @@ public class MainActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
-			broadcastMessage = intent.getExtras().getString("gcm");
-			if (broadcastMessage != null) {
-				// display our received message
-				tvBroadcastMessage.setText(broadcastMessage);
-			}
 		}
 	};
-
-	class SendMessageTask extends AsyncTask<Void, Void, Integer> {
-		@Override
-		protected Integer doInBackground(Void... params) {
-			int response = CommonUtilities.FAILED;
-			try {
-				response = BackendManager.sendMessage(txtMessage.getText().toString(), "1", "1", CommonUtilities.MESSAGE_ROOT, regId, CommonUtilities.MSG_STATUS_ACTIVE);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return response;
-		}
-
-		@Override
-		protected void onPostExecute(Integer result) {
-			super.onPostExecute(result);
-			tvBroadcastMessage.setEnabled(true);
-			tvBroadcastMessage.setText(result);
-		}
-
-	}
 }

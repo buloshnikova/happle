@@ -5,14 +5,27 @@
     android:orientation="vertical"
      >
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+     <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_medium"
-        android:textSize="32sp"
-        android:textIsSelectable="true"
-        android:text=""
-        tools:context=".MessageActivity" />
+        android:text="@string/broadcast_result"
+        tools:context=".MainActivity" />
 
+    <EditText
+        android:id="@+id/txtMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/btn_ask_hint" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnSend" />
 </LinearLayout>

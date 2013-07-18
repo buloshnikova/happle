@@ -4,38 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tv_reg_status"
-        android:layout_width="match_parent"
+    <Button 
+        android:id="@+id/btnAsk"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/registry_status"
-        />
-     <TextView
-        android:id="@+id/tv_reg_status_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/registry_status_result"
-        />
-
-         <TextView
-        android:id="@+id/tv_message_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/broadcast_label"
-        tools:context=".MainActivity" />
-     
-       
-    <TextView
-        android:id="@+id/tv_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/broadcast_result"
-        tools:context=".MainActivity" />
-
+        android:layout_margin="5dp"
+        android:text="@string/btn_ask" />
     <TextView
         android:id="@+id/tv_registration_id_label"
         android:layout_width="match_parent"
@@ -43,8 +17,7 @@
         android:padding="@dimen/padding_medium"
         android:text="@string/reg_id"
         tools:context=".MainActivity" />
-     
-       
+
     <TextView
         android:id="@+id/tv_registration_id"
         android:layout_width="match_parent"
@@ -53,19 +26,6 @@
         android:text=""
         tools:context=".MainActivity" />
 
-    <EditText
-        android:id="@+id/txtMsg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" >
+   
 
-        <requestFocus />
-    </EditText>
-
-    <Button
-        android:id="@+id/btnSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnSend" />
-    
 </LinearLayout>

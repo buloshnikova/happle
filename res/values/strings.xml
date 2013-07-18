@@ -11,5 +11,6 @@
     <string name="broadcast_result">No broadcast message yet</string>
     <string name="reg_id">Registration ID</string>
     <string name="btnSend">Send Message</string>
-
+	<string name="btn_ask">Ask</string>
+	<string name="btn_ask_hint">Ask me</string>
 </resources>

@@ -8,17 +8,24 @@ public abstract class CommonUtilities {
 	public static final String PROJECT_ID = "r567pispopd";
 	public static String REGISTRATION_ID = "REG_ID";
 
-	// ======== WEBSERVICE URL===========/
+	// ======== WEBSERVICE URL=========== //
 	public static final String URL_SEND_MESSAGE = "http://stranas.zapto.org/WebService.asmx/GetMessageFormAndroid";
 	public static final String URL_REGISTER = "http://stranas.zapto.org/Registration.asmx/register";
 	public static final String URL_LOGIN = "http://stranas.zapto.org/Registration.asmx/login";
 	public static final String URL_TEST = "http://stranas.zapto.org/api.svc/json/GetMessageFormAndroid/";
 
-	// ============ MESSAGES =================//
+	// ============ MESSAGES ================= //
 	public static final String FIELD_MESSAGE = "Message";
 	public static final int MESSAGE_ROOT = 0;
+	public static final int REQUEST_CODE_ADD = 0;
+	public static final int REQUEST_CODE_UPD = 1;
 	
-	// ============ SETTINGS =================//
+	// =============== DB ==================== //
+	public static final String DATABASE_NAME = "happle.db";
+	public static final String TBL_CONVERSATIONS = "tbl_conversations";
+	public static final int DATABASE_VERSION = 1;
+			
+	// ============ SETTINGS ================= //
 	public static final String PHONE_TYPE = "1"; // android - 1, ios - 2, webapp - 3, unknown - 0
 	
 	// ============ STATUSES ============ //
