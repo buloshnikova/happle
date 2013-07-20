@@ -15,12 +15,16 @@ public class DBHelper extends SQLiteOpenHelper {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			String create = "CREATE TABLE " + CommonUtilities.TBL_CONVERSATIONS + "( "  + 
-					"_id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
-					"name TEXT, " + 
-					"content TEXT," +
-					"date TEXT," +
-					"created TEXT," +
-					"is_checked int);";		
+					"msg_id_local INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+					"wave_id INTEGER NOT NULL, " + 
+					"ask_status NUMERIC," +
+					"message TEXT," +
+					"lng_id NUMERIC," +
+					"datetime NUMERIC," +
+					"msg_status NUMERIC," +
+					"msg_order INTEGER," +
+					"msg_order INTEGER," +
+					"is_sent INTEGER);";		
 	        db.execSQL(create);
 		}
 

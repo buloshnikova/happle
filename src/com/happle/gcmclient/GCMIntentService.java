@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Vibrator;
@@ -20,8 +22,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	private static final String TAG = "GCMIntentService";
 	private String regId = "";
+	private boolean isLogin = true;
 	SendRegistrationTask srTask;
 	SendUnregisterTask suTask;
+
+	SharedPreferences sPref;
 
 	public GCMIntentService() {
 		super(CommonUtilities.SENDER_ID);
@@ -64,17 +69,27 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onRegistered(Context ctx, String regId) {
+		//savePreverences(CommonUtilities.REGISTRATION_ID, regId);
+		int tryToSave = 0;
+		do {
+			if (CommonUtilities.savePreverences(ctx, CommonUtilities.REGISTRATION_ID, regId))
+				tryToSave = 5;
+			tryToSave++;
+		} while (tryToSave < 5);
+		isLogin = false;
 		// send regId to your server
-		srTask = new SendRegistrationTask(regId);
+		srTask = new SendRegistrationTask(isLogin, regId);
 		srTask.execute();
 		Log.d(TAG, regId);
 	}
 
-	class SendRegistrationTask extends AsyncTask<Void, Void, Integer> {
+	class SendRegistrationTask extends AsyncTask<Void, Boolean, Integer> {
 		private String regId = "";
+		private boolean isLogin = true;
 
-		public SendRegistrationTask(String regId) {
+		public SendRegistrationTask(Boolean IsLogin, String regId) {
 			this.regId = regId;
+			this.isLogin = IsLogin;
 		}
 
 		@Override
@@ -87,7 +102,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			int error = CommonUtilities.FAILED;
 			try {
 				BackendManager bManager = new BackendManager();
-				error = bManager.sendLoginRegistration(CommonUtilities.URL_REGISTER, regId, true);
+				error = bManager.sendLoginRegistration(CommonUtilities.URL_REGISTER, regId, isLogin);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

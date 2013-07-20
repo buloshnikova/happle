@@ -10,7 +10,7 @@ import com.happle.gcmclient.config.CommonUtilities;
 
 public final class ParameterUtil {
 
-	 public static  List<NameValuePair> createLoginRegistrationParams(String registration_id, String username, String user_pwd) {
+	 public static List<NameValuePair> createLoginRegistrationParams(String registration_id, String username, String user_pwd) {
 			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 			parameters.add(new BasicNameValuePair("registration_id", registration_id));
 			parameters.add(new BasicNameValuePair("phone_type", CommonUtilities.PHONE_TYPE));
@@ -30,7 +30,7 @@ public final class ParameterUtil {
 		 parameters.add(new BasicNameValuePair("user_id", senderID));
 		 parameters.add(new BasicNameValuePair("message", message));
 		 parameters.add(new BasicNameValuePair("datetime",String.valueOf(System.currentTimeMillis())));
-		 parameters.add(new BasicNameValuePair("int msg_status", String.valueOf(msg_status)));
+		 parameters.add(new BasicNameValuePair("msg_status", String.valueOf(msg_status)));
 		 return parameters;
 	 }
 }

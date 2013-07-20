@@ -35,6 +35,15 @@ public class MessageActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_message);
 		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			String requestCode = extras.getString("REQUEST_CODE");
+			if (Integer.parseInt(requestCode) == CommonUtilities.REQUEST_CODE_UPD) {
+				// pull from DB all messages from this conversation
+				// display messaged in the right order
+			}
+		}
+		
 		initUI();
 		
 		initReceiver();
@@ -45,16 +54,10 @@ public class MessageActivity extends Activity {
 	private void initUI()
 	{
 		tvMessage = (TextView) findViewById(R.id.tv_message);
-		btnSend = (Button)findViewById(R.id.btnAsk);
+		txtMessage = (EditText) findViewById(R.id.txtMsg);
+		btnSend = (Button)findViewById(R.id.btnSend);
 		btnSend.setOnClickListener(sendListener);
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			String requestCode = extras.getString("REQUEST_CODE");
-			if (Integer.parseInt(requestCode) == CommonUtilities.REQUEST_CODE_UPD) {
-				// pull from DB all messages from this conversation
-				// display messaged in the right order
-			}
-		}
+		
 	}
 	
 	private OnClickListener sendListener = new OnClickListener() {
@@ -120,11 +123,14 @@ public class MessageActivity extends Activity {
 
 
 	class SendMessageTask extends AsyncTask<Void, Void, Integer> {
+		Context context;
 		@Override
 		protected Integer doInBackground(Void... params) {
 			int response = CommonUtilities.FAILED;
 			try {
-				response = BackendManager.sendMessage(txtMessage.getText().toString(), "1", "1", CommonUtilities.MESSAGE_ROOT, regId, CommonUtilities.MSG_STATUS_ACTIVE);
+				String msg_id = CommonUtilities.generateGUID(context);
+				String wave_id = CommonUtilities.generateGUID(context);; 
+				response = BackendManager.sendMessage(txtMessage.getText().toString(), msg_id, wave_id, CommonUtilities.MESSAGE_ROOT, regId, CommonUtilities.MSG_STATUS_ACTIVE);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -148,6 +154,13 @@ public class MessageActivity extends Activity {
 				// display our received message
 				tvMessage.setText(broadcastMessage);
 			}
+		}
+	};
+	
+	private BroadcastReceiver gcmReceiver = new BroadcastReceiver()  {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
 		}
 	};
 }

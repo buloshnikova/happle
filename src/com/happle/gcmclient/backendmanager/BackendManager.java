@@ -74,7 +74,7 @@ public final class BackendManager {
 			HttpEntity httpentity = response.getEntity();
 			String res = EntityUtils.toString(httpentity);
 			res = res.trim();
-			error = Integer.parseInt(res);
+			//error = Integer.parseInt(res);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -92,9 +92,10 @@ public final class BackendManager {
 		int error = CommonUtilities.FAILED;
 		
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		HttpPost post = new HttpPost(isLogin ? CommonUtilities.URL_REGISTER : CommonUtilities.URL_LOGIN);
+		HttpPost post = new HttpPost(isLogin ? CommonUtilities.URL_LOGIN : CommonUtilities.URL_REGISTER);
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
-		List<NameValuePair> parameters = ParameterUtil.createLoginRegistrationParams(senderID, null, null);
+		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+		parameters = ParameterUtil.createLoginRegistrationParams(senderID, "", "");
 		// Url Encoding the POST parameters
 		try {
 			post.setEntity(new UrlEncodedFormEntity(parameters));
@@ -110,7 +111,7 @@ public final class BackendManager {
 				HttpEntity httpentity = response.getEntity();
 				String res = EntityUtils.toString(httpentity);
 				res = res.trim();
-				error = Integer.parseInt(res);
+				//error = Integer.parseInt(res);
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

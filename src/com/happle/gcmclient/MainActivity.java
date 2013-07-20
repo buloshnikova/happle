@@ -6,22 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.happle.gcmclient.R;
-import com.happle.gcmclient.backendmanager.BackendManager;
 import com.happle.gcmclient.config.CommonUtilities;
 import com.happle.gcmclient.utility.AlertDialogManager;
 import com.happle.gcmclient.utility.NetworkUtility;
@@ -33,8 +26,7 @@ public class MainActivity extends Activity {
 	SharedPreferences sPref;
 
 	// This intent filter will be set to filter on the string "GCM_RECEIVED_ACTION"
-	GCMReceiver mGCMReceiver;
-	IntentFilter registeredFilter;
+	IntentFilter gcmFilter;
 	// Alert dialog manager
 	private AlertDialogManager alert = new AlertDialogManager();
 
@@ -61,14 +53,14 @@ public class MainActivity extends Activity {
 			Log.d(TAG, "Missing SENDER_ID");
 			return;
 		}
-
-		registeredFilter.addAction("GCM_RECEIVED_ACTION");
 	}
 
 	private void initUI() {
 		findViewById(R.id.btnAsk).setOnClickListener(askListener);
-		if (isRegistered()) {
-			regId = getPreferences(CommonUtilities.REGISTRATION_ID);
+		gcmFilter = new IntentFilter();
+		gcmFilter.addAction("GCM_RECEIVED_ACTION");
+		if (CommonUtilities.isRegistered(this)) {
+			regId = CommonUtilities.pullPreferences(this,CommonUtilities.REGISTRATION_ID);
 		} else { 
 			registerClient(); }
 		tvRegID = (TextView) findViewById(R.id.tv_registration_id);
@@ -78,10 +70,9 @@ public class MainActivity extends Activity {
 	private OnClickListener askListener = new OnClickListener() {
 		public void onClick(View v) {
 			Intent intent = new Intent(MainActivity.this, MessageActivity.class);
-			startActivityForResult(intent, CommonUtilities.REQUEST_CODE_ADD);
 			intent.putExtra("REG_ID", regId);
 			intent.putExtra("REQUEST_CODE", String.valueOf(CommonUtilities.REQUEST_CODE_UPD));
-			startActivityForResult(intent, CommonUtilities.REQUEST_CODE_UPD);
+			startActivity(intent);
 		}
 	};
 	
@@ -99,43 +90,18 @@ public class MainActivity extends Activity {
 				GCMRegistrar.register(this, CommonUtilities.SENDER_ID);
 				regId = GCMRegistrar.getRegistrationId(this);
 			}
-			savePreverences(CommonUtilities.REGISTRATION_ID, regId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		Log.d(TAG, regId);
 	}
 
-	private boolean savePreverences(String prefName, String prefValue) {
-		boolean result = false;
-		sPref = getSharedPreferences("UtilPref", MODE_PRIVATE);
-	    Editor ed = sPref.edit();
-	    ed.putString(prefName, prefValue);
-	    ed.commit();
-		return result;
-	}
-	
-	private String getPreferences (String prefName) {
-		sPref = getPreferences(MODE_PRIVATE);
-	    String savedText = sPref.getString(prefName, "");
-	    return savedText;
-	}
-	private boolean isRegistered() {
-		boolean result = false;
-		sPref = getPreferences(MODE_PRIVATE);
-	    String savedText = sPref.getString(CommonUtilities.REGISTRATION_ID, "");
-	    if (savedText != "" && savedText != null)
-	    	result = true;
-	    return result;
-	}
-	
-
 	// If our activity is paused, it is important to UN-register any
 	// broadcast receivers.
 	@Override
 	protected void onPause() {
+		unregisterReceiver(gcmReceiver);
 		super.onPause();
-		unregisterReceiver(mGCMReceiver);
 	}
 
 	// When an activity is resumed, be sure to register any
@@ -151,7 +117,7 @@ public class MainActivity extends Activity {
 			// stop executing code by return
 			return;
 		}
-		registerReceiver(mGCMReceiver, registeredFilter);
+		registerReceiver(gcmReceiver, gcmFilter);
 
 	}
 
@@ -169,10 +135,11 @@ public class MainActivity extends Activity {
 	}
 
 
-	private class GCMReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			
-		}
-	};
+	// A BroadcastReceiver must override the onReceive() event.
+		private BroadcastReceiver gcmReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+
+			}
+		};
 }

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_medium"
         android:text="@string/broadcast_result"
-        tools:context=".MainActivity" />
+        tools:context=".MessageActivity" />
 
     <EditText
         android:id="@+id/txtMsg"
